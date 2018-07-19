@@ -6,7 +6,7 @@ Software allows for segmenting cells in the endothelial layer of cornea using de
 
 Graphical Processing Units (GPU) cards are required for quick neural network training and testing. This code is designed to work well with the GPU nodes (systems) at Case Western Reserve University's High Performance Cluster (HPC). Please create an account for yourself on the cluster under Dr. Wilson's account. Send an email to hpc-support@case.edu for the same and cc Dr. Wilson. All instructions regarding using the cluster are at: https://sites.google.com/a/case.edu/hpc-upgraded-cluster/home. Sign up for their interactive seminars during the semester: https://canvas.case.edu/courses/3014. This step is required if you want to train and test the neural networks and modify the code. If you just want to look at the code for now, you don't have to do this.
 
-### Accessing the HPC and getting things ready
+## Accessing the HPC and getting things ready
 
 Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster. Every user gets a folder on the HPC to work in (something like /home/CaseID/). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. Enter your Case credentials to start a session. After you have an SSH connection, there are two ways to run your software:
 
@@ -44,21 +44,14 @@ singularity shell --nv /home/cxk340/singularity_image/keras_tf.img
 
 Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software.
 
-### Folder organization
-
+## Folder organization
 
 
 ## Training the neural network
 
-Explain how to run the automated tests for this system
 
-### Testing a trained network on a new image
+## Testing a trained network on a new image
 
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Built With
 
