@@ -6,7 +6,7 @@ Software allows for segmenting cells in the endothelial layer of cornea using de
 
 Graphical Processing Units (GPU) cards are required for quick neural network training and testing. This code is designed to work well with the GPU nodes (systems) at Case Western Reserve University's High Performance Cluster (HPC). Please create an account for yourself on the cluster under Dr. Wilson's account. Send an email to hpc-support@case.edu for the same and cc Dr. Wilson. All instructions regarding using the cluster are at: https://sites.google.com/a/case.edu/hpc-upgraded-cluster/home. Sign up for their interactive seminars during the semester: https://canvas.case.edu/courses/3014. This step is required if you want to train and test the neural networks and modify the code. If you just want to look at the code for now, you don't have to do this.
 
-## Accessing the HPC and getting things ready
+## Accessing the High Performance Cluster (HPC) and getting things ready
 
 Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster. Every user gets a folder on the HPC to work in (something like /home/CaseID/). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. Enter your Case credentials to start a session. After you have an SSH connection, there are two ways to run your software:
 
@@ -46,12 +46,33 @@ Both these methods will give you a shell that can run python with the deep learn
 
 ## Folder organization
 
+The repository is organized into the following folders:
 
-## Training the neural network
+```
+\data
+\results
+\test_examples
+code files
+```
 
+`\data` consists of training and testing images (in `\train` and `\test` folders respectively). `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the images currently. `\results` folder consists the segmentation result on the `\test` images. The code messes up the order of images in the `\test` folder (0,1,11,.. instead of 0,1,2,..). The correct order is written to `\test_examples`.
 
-## Testing a trained network on a new image
+`\data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. This weight file can be loaded at run-time to test the network against new images (code in `test_predict.py`. `visualize_model.py` draws a picture of the network and saves it in `model.png`.
 
+### Training and Testing the neural network
+
+Run
+
+```
+python unet.py
+```
+
+### Test on new image
+
+After training the network and creating the weights file (hdf5). Run
+```
+python test_predict.py
+```
 
 ## Built With
 
