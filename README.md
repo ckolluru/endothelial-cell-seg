@@ -15,14 +15,19 @@ When connected, you will see a directory listing of your laptop/PC on the left a
 
 ![winscp2](https://user-images.githubusercontent.com/8373968/43086524-2dc8a36e-8ebb-11e8-9834-119aa44a8388.PNG)
 
-Every user gets a folder on the HPC to work in (something like /home/CaseID/). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. 
+Every user gets a folder on the HPC to work in (something like `/home/CaseID/`). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. 
 
 ![mobaxterm](https://user-images.githubusercontent.com/8373968/43086282-9c48a754-8eba-11e8-9a04-4fcec3919d08.PNG)
 
-Enter your Case credentials to start a session. After you have an SSH connection, there are two ways to run your software:
+Enter your Case credentials to start a session. 
+
+![mobaxterm2](https://user-images.githubusercontent.com/8373968/43086589-5b1b3c78-8ebb-11e8-8f23-a8d44a680ecf.PNG)
+
+After you have an SSH connection, there are two ways to run your software:
 
 - Interactive mode: You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then run a file.
 - Job (batch) mode: You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. You don't have to wait if the resources you need aren't readily available in this case.
+
 
 I'll demonstrate the interactive mode now. First, we request a GPU node (essentially just a PC which has some graphic cards on it):
 ```
