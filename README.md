@@ -11,15 +11,15 @@ Graphical Processing Units (GPU) cards are required for quick neural network tra
 Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster.
 ![winscp](https://user-images.githubusercontent.com/8373968/43086116-37fa2da4-8eba-11e8-99f3-814d016258a5.PNG)
 
-When connected, you will see a directory listing of your laptop/PC on the left and your folder on the HPC on the right. You can make new folders, delete on each side. Drag and drop from one side to another to copy.
+When connected, you will see a directory listing of your laptop/PC on the left and your folder on the HPC on the right. You can make new folders, delete on each side. Drag and drop from one side to another to copy. Every user gets a folder on the HPC to work in (something like `/home/CaseID/`).
 
 ![winscp2](https://user-images.githubusercontent.com/8373968/43086524-2dc8a36e-8ebb-11e8-9834-119aa44a8388.PNG)
 
-Every user gets a folder on the HPC to work in (something like `/home/CaseID/`). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. 
+Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. MobaXTerm will look like this:
 
 ![mobaxterm](https://user-images.githubusercontent.com/8373968/43086282-9c48a754-8eba-11e8-9a04-4fcec3919d08.PNG)
 
-Enter your Case credentials to start a session. 
+Enter your Case credentials to start a session. Ignore the torch error, you shouldn't see that.
 
 ![mobaxterm2](https://user-images.githubusercontent.com/8373968/43086589-5b1b3c78-8ebb-11e8-8f23-a8d44a680ecf.PNG)
 
