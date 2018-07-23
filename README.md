@@ -8,7 +8,18 @@ Graphical Processing Units (GPU) cards are required for quick neural network tra
 
 ## Accessing the High Performance Cluster (HPC) and getting things ready
 
-Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster. Every user gets a folder on the HPC to work in (something like /home/CaseID/). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. Enter your Case credentials to start a session. After you have an SSH connection, there are two ways to run your software:
+Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster.
+![winscp](https://user-images.githubusercontent.com/8373968/43086116-37fa2da4-8eba-11e8-99f3-814d016258a5.PNG)
+
+When connected, you will see a directory listing of your laptop/PC on the left and your folder on the HPC on the right. You can make new folders, delete on each side. Drag and drop from one side to another to copy.
+
+![winscp2](https://user-images.githubusercontent.com/8373968/43086524-2dc8a36e-8ebb-11e8-9834-119aa44a8388.PNG)
+
+Every user gets a folder on the HPC to work in (something like /home/CaseID/). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. 
+
+![mobaxterm](https://user-images.githubusercontent.com/8373968/43086282-9c48a754-8eba-11e8-9a04-4fcec3919d08.PNG)
+
+Enter your Case credentials to start a session. After you have an SSH connection, there are two ways to run your software:
 
 - Interactive mode: You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then run a file.
 - Job (batch) mode: You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. You don't have to wait if the resources you need aren't readily available in this case.
