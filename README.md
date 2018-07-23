@@ -98,7 +98,7 @@ python test_predict.py
 
 ## Authors
 
-* **Chaitanya Kolluru** - *Initial work* 
+* **Chaitanya Kolluru** 
 
 ## License
 
