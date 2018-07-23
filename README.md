@@ -73,7 +73,7 @@ code files
 
 `\data` consists of training and testing images (in `\train` and `\test` folders respectively). `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the images currently. `\results` folder consists the segmentation result on the `\test` images. The code messes up the order of images in the `\test` folder (0,1,11,.. instead of 0,1,2,..). The correct order is written to `\test_examples`. 
 
-Since the dataset only consists of 34 training images, we augment the dataset using a combination of rotation steps and translations. Routines to perform the augmentation are within `data.py` file. Augmented versions of training images and labels are written to `aug_train` and `aug_label`. `aug_merge` is a temporary folder that merges the images and label into red and blue channels of an RGB image, performs augmentation and then separates the two channels in the end.
+Since the training dataset only consists of 34 training images, we augment the dataset using a combination of rotation steps and translations. Routines to perform the augmentation are within `data.py` file. Augmented versions of training images and labels are written to `aug_train` and `aug_label`. `aug_merge` is a temporary folder that merges the images and label into red and blue channels of an RGB image, performs augmentation and then separates the two channels in the end.
 
 `data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. This weight file can be loaded at run-time to test the network against new images (code in `test_predict.py`. `visualize_model.py` draws a picture of the network and saves it in `model.png`.
 
