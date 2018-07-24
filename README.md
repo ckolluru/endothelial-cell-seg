@@ -6,12 +6,28 @@ Software allows for segmenting cells in the endothelial layer of cornea using de
 
 Graphical Processing Units (GPU) cards are required for quick neural network training and testing. This code is designed to work well with the GPU nodes (systems) at Case Western Reserve University's High Performance Cluster (HPC). Please create an account for yourself on the cluster under Dr. Wilson's account. Send an email to hpc-support@case.edu for the same and cc Dr. Wilson. All instructions regarding using the cluster are at: https://sites.google.com/a/case.edu/hpc-upgraded-cluster/home. Sign up for their interactive seminars during the semester: https://canvas.case.edu/courses/3014. This step is required if you want to train and test the neural networks and modify the code. If you just want to look at the code for now, you don't have to do this.
 
-## Accessing the HPC and getting things ready
+## Accessing the High Performance Cluster (HPC) and getting things ready
 
-Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster. Every user gets a folder on the HPC to work in (something like /home/CaseID/). Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. Enter your Case credentials to start a session. After you have an SSH connection, there are two ways to run your software:
+Files on the HPC can be accessed using WinSCP software. This software allows one to copy files to/from the cluster and edit existing files on the cluster.
+![winscp](https://user-images.githubusercontent.com/8373968/43086116-37fa2da4-8eba-11e8-99f3-814d016258a5.PNG)
+
+When connected, you will see a directory listing of your laptop/PC on the left and your folder on the HPC on the right. You can make new folders, delete on each side. Drag and drop from one side to another to copy. Every user gets a folder on the HPC to work in (something like `/home/CaseID/`).
+
+![winscp2](https://user-images.githubusercontent.com/8373968/43086524-2dc8a36e-8ebb-11e8-9834-119aa44a8388.PNG)
+
+Next, to run commands, you can use MobaXTerm, PuTTY or similar software to connect to the HPC (rider.case.edu), with an SSH type connection. MobaXTerm will look like this:
+
+![mobaxterm](https://user-images.githubusercontent.com/8373968/43086282-9c48a754-8eba-11e8-9a04-4fcec3919d08.PNG)
+
+Enter your Case credentials to start a session. Ignore the torch error, you shouldn't see that.
+
+![mobaxterm2](https://user-images.githubusercontent.com/8373968/43086589-5b1b3c78-8ebb-11e8-8f23-a8d44a680ecf.PNG)
+
+After you have an SSH connection, there are two ways to run your software:
 
 - Interactive mode: You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then run a file.
 - Job (batch) mode: You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. You don't have to wait if the resources you need aren't readily available in this case.
+
 
 I'll demonstrate the interactive mode now. First, we request a GPU node (essentially just a PC which has some graphic cards on it):
 ```
@@ -46,12 +62,34 @@ Both these methods will give you a shell that can run python with the deep learn
 
 ## Folder organization
 
+The repository is organized into the following folders:
 
-## Training the neural network
+```
+\data
+\results
+\test_examples
+code files
+```
 
+`\data` consists of training and testing images (in `\train` and `\test` folders respectively). `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the images currently. `\results` folder consists the segmentation result on the `\test` images. The code messes up the order of images in the `\test` folder (0,1,11,.. instead of 0,1,2,..). The correct order is written to `\test_examples`. 
 
-## Testing a trained network on a new image
+Since the training dataset only consists of 34 training images, we augment the dataset using a combination of rotation steps and translations. Routines to perform the augmentation are within `data.py` file. Augmented versions of training images and labels are written to `aug_train` and `aug_label`. `aug_merge` is a temporary folder that merges the images and label into red and blue channels of an RGB image, performs augmentation and then separates the two channels in the end.
 
+`data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. This weight file can be loaded at run-time to test the network against new images (code in `test_predict.py`. `visualize_model.py` draws a picture of the network and saves it in `model.png`.
+
+### Training and Testing the neural network
+
+Run
+```
+python unet.py
+```
+
+### Test on new image
+
+After training the network and creating the weights file (hdf5), run:
+```
+python test_predict.py
+```
 
 ## Built With
 
@@ -60,7 +98,7 @@ Both these methods will give you a shell that can run python with the deep learn
 
 ## Authors
 
-* **Chaitanya Kolluru** - *Initial work* 
+* **Chaitanya Kolluru** 
 
 ## License
 
