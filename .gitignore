@@ -1,2 +1,5 @@
 # Network weights are often over 300 MB, results in a large repo. Hence we ignore all such files.
 *.hdf5
+
+# Output files from batch job submissions
+*.out
