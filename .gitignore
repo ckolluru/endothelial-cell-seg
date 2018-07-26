@@ -1,1 +1,2 @@
-
+# Network weights are often over 300 MB, results in a large repo. Hence we ignore all such files.
+*.hdf5

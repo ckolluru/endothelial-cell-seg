@@ -8,8 +8,14 @@
 #SBATCH --mail-user=cxk340@case.edu
 #SBATCH --mail-type=begin
 
-
+#Use pre-existing HPC modules
+export OMP_NUM_THREADS=1
+module swap intel gcc
 module load tensorflow
 
-singularity exec $TENSORFLOW python /home/cxk340/cell_seg_software/unet.py
+python /home/cxk340/endothelial-cell-seg/unet.py
 
+#Use singularity image method
+module load gcc cuda singularity
+singularity shell --nv /home/cxk340/OCT_DL/singularity_image/keras_tf.img
+python /home/cxk340/endothelial-cell-seg/unet.py
