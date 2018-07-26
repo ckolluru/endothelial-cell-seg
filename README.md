@@ -52,7 +52,7 @@ K.__version__
 ```
 Currently, Tensorflow 1.4.0 and Keras 2.1.3 are installed in the tensorflow module. Modules are maintained by the HPC staff, and might not contain all the python libraries that we might need. Request for adding new libraries to the module can be done by writing to hpc-support@case.edu.
 
-2. We can also use a singularity (a software like Docker) image that we (our lab) can control. New python libraries can be installed on this image which can then be executed on the cluster.
+2. We can also use a singularity (a software like Docker) image that we (our lab) can control. New python libraries can be installed on this image which can then be executed on the cluster. (This has been tested to work currently).
 ```
 module load gcc cuda singularity
 singularity shell --nv /home/cxk340/singularity_image/keras_tf.img
@@ -67,7 +67,6 @@ The repository is organized into the following folders:
 ```
 \data
 \results
-\test_examples
 code files
 ```
 
