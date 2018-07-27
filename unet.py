@@ -8,6 +8,7 @@ from keras import backend as keras
 from data import *
 import argparse
 from keras.utils import plot_model
+import keras as K
 
 class myUnet(object):
 
@@ -21,16 +22,20 @@ class myUnet(object):
         self.user = args.u
         self.mydata = dataProcess(256, 256, self.user)
 
+        # Version of the keras library is different in the HPC's tensorflow module and our singularity image
+        # This is causing an issue with the data augmentation step (ImageDataGenerator)
+        self.keras_version = K.__version__
+
     def load_data(self):
 
         # Load training and test data for the network
-        imgs_train, imgs_train_labels, imgs_test = self.mydata.load_EC_data()
+        imgs_train, imgs_train_labels, imgs_test = self.mydata.load_EC_data(self.keras_version)
         return imgs_train, imgs_train_labels, imgs_test
 
     def load_pre_train_data(self):
 
         # Load pre-training train and validation data for the network
-        imgs_train, imgs_train_labels, imgs_validation, imgs_validation_labels = self.mydata.load_neuronal_data()
+        imgs_train, imgs_train_labels, imgs_validation, imgs_validation_labels = self.mydata.load_neuronal_data(self.keras_version)
         return imgs_train, imgs_train_labels, imgs_validation, imgs_validation_labels
 
     def get_unet(self):

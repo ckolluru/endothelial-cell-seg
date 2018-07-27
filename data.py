@@ -1,8 +1,8 @@
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 import numpy as np 
-import os
 import glob
 import re
+import math
 
 def natural_keys(text):
 
@@ -17,13 +17,13 @@ class dataProcess(object):
         self.img_width = img_width
         self.username = username
 
-    def load_EC_data(self):
+    def load_EC_data(self, keras_version):
 
         # Augment the training images and labels, because 34 training images is a small number of images for deep learning methods
         datagen_args = dict(rotation_range=0.2,
                             width_shift_range=0.05,
                             height_shift_range=0.05,
-                            shear_range=0.05,
+                            shear_range= (0.05 * 360. / (2*math.pi)) if keras_version == '2.1.3' else 0.05,
                             zoom_range=0.05,
                             horizontal_flip=True,
                             fill_mode='nearest',
@@ -52,7 +52,7 @@ class dataProcess(object):
 
         return image_generator, labels_generator, imgs_test_stack
 
-    def load_neuronal_data(self):
+    def load_neuronal_data(self, keras_version):
 
         # The neuron image dataset is (512,512) in size. The images are cropped to (256, 256) and saved in train_crop and test_crop folders.
 
@@ -60,7 +60,7 @@ class dataProcess(object):
         datagen_args = dict(rotation_range=0.2,
                             width_shift_range=0.05,
                             height_shift_range=0.05,
-                            shear_range=0.05,
+                            shear_range= (0.05 * 360. / (2*math.pi)) if keras_version == '2.1.3' else 0.05,
                             zoom_range=0.05,
                             horizontal_flip=True,
                             fill_mode='nearest',
