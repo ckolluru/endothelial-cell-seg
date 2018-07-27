@@ -7,6 +7,7 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
 from data import *
 import argparse
+from keras.utils import plot_model
 
 class myUnet(object):
 
@@ -18,19 +19,18 @@ class myUnet(object):
         self.use_pre_train = args.use_pre_train
         self.test = args.test
         self.user = args.u
+        self.mydata = dataProcess(256, 256, self.user)
 
     def load_data(self):
 
         # Load training and test data for the network
-        mydata = dataProcess(256, 256, self.user)
-        imgs_train, imgs_train_labels, imgs_test = mydata.load_EC_data()
+        imgs_train, imgs_train_labels, imgs_test = self.mydata.load_EC_data()
         return imgs_train, imgs_train_labels, imgs_test
 
     def load_pre_train_data(self):
 
         # Load pre-training train and validation data for the network
-        mydata = dataProcess(256, 256, self.user)
-        imgs_train, imgs_train_labels, imgs_validation, imgs_validation_labels = mydata.load_neuronal_data()
+        imgs_train, imgs_train_labels, imgs_validation, imgs_validation_labels = self.mydata.load_neuronal_data()
         return imgs_train, imgs_train_labels, imgs_validation, imgs_validation_labels
 
     def get_unet(self):
@@ -137,15 +137,28 @@ class myUnet(object):
             print('Test on unseen EC microscopy images')
             print('-' * 30)
 
+            # Get the neural network architecture
+            print('Loading network architecture')
+            model = self.get_unet()
+            print('Loaded network architecture \n')
+
+            # Load the network weights
+            print('Loading network weights from unet_train.hdf5 file')
+            model.load_weights('/home/' + self.user + '/endothelial-cell-seg/unet_train.hdf5')
+            print('Loaded weights from the pre-trained network \n')
+
+            # Load training and testing images (only testing is eventually used here)
+            print('Loading testing data (EC cells in microscopy images)')
+            imgs_train, imgs_train_labels, imgs_test = self.load_data()
+            print('Loaded testing data (EC cells in microscopy images) \n')
+
             # Predict on the test images
             imgs_test_predictions = model.predict(imgs_test, batch_size=1, verbose=1)
             print('Predicted on test EC images')
 
             # Save predictions to the results folder
             print('Saving predictions on test images to results folder in the current directory')
-            for i in np.arange(imgs_test_predictions.shape[0]):
-                img_test_prediction = array_to_img(imgs_test_predictions[i,:,:])
-                img_test_prediction.save('/home/' + self.user + '/endothelial-cell-seg/results/%d.jpg' %(i))
+            self.mydata.save_test_predictions(imgs_test_predictions, self.user)
 
 if __name__ == '__main__':
 
@@ -172,3 +185,7 @@ if __name__ == '__main__':
 
     # Train and test the U-Net network as needed
     myunet.train_and_test()
+
+    # Draw model architecture to a file (can be used to ensure that the layers are connected properly)
+    model = myunet.get_unet()
+    plot_model(model, to_file='model.png')

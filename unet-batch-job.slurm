@@ -9,12 +9,11 @@
 #SBATCH --mail-type=end
 
 #Use pre-existing HPC modules
-#export OMP_NUM_THREADS=1
-#module swap intel gcc
-#module load tensorflow
-
-#python /home/cxk340/endothelial-cell-seg/unet.py
+export OMP_NUM_THREADS=1
+module swap intel gcc
+module load tensorflow
+python /home/cxk340/endothelial-cell-seg/unet.py
 
 #Use singularity image method
-module load gcc cuda singularity
-singularity exec --nv /home/cxk340/OCT_DL/singularity_image/keras_tf.img python /home/cxk340/endothelial-cell-seg/unet.py
+#module load gcc cuda singularity
+#singularity exec --nv /home/cxk340/OCT_DL/singularity_image/keras_tf.img python /home/cxk340/endothelial-cell-seg/unet.py
