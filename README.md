@@ -61,14 +61,14 @@ Both these methods will give you a shell that can run python with the deep learn
 
 ## Downloading the code
 
-The code can be downloaded straight to your folder on the HPC. To do this, navigate to your folder and then type:
+The code can be downloaded straight to your folder on the HPC. To do this, navigate to your home folder (`/home/caseID/`) and then type:
 
 ```
 module load git
 git clone git@github.com:ckolluru/endothelial-cell-seg.git
 ```
 
-You will see a folder named endothelial-cell-seg in your home/caseID folder. 
+You will see a folder named endothelial-cell-seg in your (`/home/caseID/`) folder. 
 
 ## Folder organization
 
@@ -80,11 +80,11 @@ The repository is organized into the following folders:
 code files
 ```
 
-The code allows for pre-training the network to segment neurons in electron microscopy images. This is an optional step, and can be useful since the electron microscopy images look similar to our endothelial cell image dataset. Moreover, the network, U-Net was originally proposed to segment such images. Training and testing images of this dataset is in the `\neuronal` folder. 
+The code allows for pre-training the network to segment neurons in electron microscopy images. This is an optional step, and can be useful since the electron microscopy images look similar to our endothelial cell image dataset. Moreover, the network, U-Net was originally proposed to segment such images. Training and testing images for this dataset are in the `\neuronal` folder. 
 
-Images related to the endothelial cells are present in the `\EC` folder. Both `\EC` and `\neuronal` folders have the following organization. Both consists of training and testing images (in `\train` and `\test` folders respectively). `\neuronal` images were cropped to (256, 256) to match the `\EC` image size. The cropped `\neuronal` images are in `\train_crop` and `\test_crop` respectively. 
+Images related to the endothelial cells are present in the `\EC` folder. Both `\EC` and `\neuronal` folders have the following folder organization. Both consist of training and testing images (in `\train` and `\test` folders respectively). `\neuronal` images were cropped to (256, 256) to match the `\EC` image size. The cropped `\neuronal` images are in `\train_crop` and `\test_crop` respectively. 
 
-For `\EC`, `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the images currently. `\results` folder consists the segmentation result on the `\test` images. 
+For `\EC`, `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the test images currently. `\results` folder in the parent directory consists the segmentation result on the `\test` images. 
 
 For `\neuronal`, we currently have 15 `\train_crop` images and 15 `\test_crop` images. 
 
@@ -107,7 +107,13 @@ Command line arguments can be sent to `unet.py`. For example,
 --train 1 will train the network with the `\EC` images. --train 0 will not
 --use_pre_train 1 will load the pre-trained network weights prior to network training on `\EC` images. --use_pre_train 0 will not.
 --test 1 will run the trained network (looks for the weight file from the trained network) on all `\EC` test images. --test 0 will not.
---u cxk340 will consider that the code and data exist in the HPC user cxk340.
+--u cxk340 will consider that the code and data exist in the HPC user cxk340. **Other users**, need to specify their case ID instead.
+
+Hence, in order to test the software on a completely new image, the image can be cropped (to 256, 256) and copied over to `\data\EC\test`. JPG format is supported. The network can be fully trained (including pre-training) by running `python unet.py`. With no command line arguments, the code will pre-train, train, and predict on all test images in `\data\EC\test` folder. The results will be in the `\results` folder. If you already have a trained network (the corresponding weight file, unet_train.hdf5 in your folder), testing can be done by just running:
+
+```
+python unet.py --pre_train 0 --train 0 --test 1 --u cxk340
+```
 
 ## Built With
 
