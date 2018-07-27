@@ -25,8 +25,8 @@ Enter your Case credentials to start a session. After logging in, you will see s
 
 You are now logged into the HEAD node (hpc3). These nodes are general purpose nodes and should not be used for any scientific computing. These nodes can only be used to request a computing node (CPU/GPU) in interactive mode (see below) or submit jobs (see below). Essentially, after you have an SSH connection to the HPC, there are two ways to run your software:
 
-- Interactive mode: `#Interactive mode` You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then run a file.
-- Job (batch) mode: `#Job (batch) mode`  You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. You don't have to wait if the resources you need aren't readily available in this case.
+- Interactive mode: `#Interactive mode` You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then get a shell to that node to run files etc.
+- Job (batch) mode: `#Job (batch) mode`  You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. The script can contain as many commands as you like. You don't have to wait if the resources you need aren't readily available in this case.
 
 I'll demonstrate the `[interactive mode](#interactive-mode)` now. First, we request a GPU node (essentially just a PC which has some graphic cards on it):
 ```
