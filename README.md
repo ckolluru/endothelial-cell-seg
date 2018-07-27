@@ -57,7 +57,7 @@ module load gcc cuda singularity
 singularity shell --nv /home/cxk340/singularity_image/keras_tf.img
 ```
 
-Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software. Currently, only option 2 works with the code. I think it is an issue with the versions of keras/tf libraries.
+Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software. Currently, only option 2 works with the code. I think that the issue with option 1 relates to the versions of keras/tf libraries.
 
 ## Downloading the code
 
