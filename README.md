@@ -19,21 +19,20 @@ Next, to run commands, you can use MobaXTerm, PuTTY or similar software to conne
 
 ![mobaxterm](https://user-images.githubusercontent.com/8373968/43086282-9c48a754-8eba-11e8-9a04-4fcec3919d08.PNG)
 
-Enter your Case credentials to start a session. Ignore the torch error, you shouldn't see that.
+Enter your Case credentials to start a session. After logging in, you will see something like this:
 
-![mobaxterm2](https://user-images.githubusercontent.com/8373968/43086589-5b1b3c78-8ebb-11e8-8f23-a8d44a680ecf.PNG)
+`[cxk340@hpc3 ~]$`
 
-After you have an SSH connection, there are two ways to run your software:
+You are now logged into the HEAD node (hpc3). These nodes are general purpose nodes and should not be used for any scientific computing. These nodes can only be used to request a computing node (CPU/GPU) in interactive mode (see below) or submit jobs (see below). Essentially, after you have an SSH connection to the HPC, there are two ways to run your software:
 
 - Interactive mode: `#Interactive mode` You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then run a file.
 - Job (batch) mode: `#Job (batch) mode`  You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. You don't have to wait if the resources you need aren't readily available in this case.
-
 
 I'll demonstrate the `[interactive mode](#interactive-mode)` now. First, we request a GPU node (essentially just a PC which has some graphic cards on it):
 ```
 srun --x11 -p gpu -C gpup100 -N 1 -c 12 --gres=gpu:2 --mem=186g --time=72:00:00 --pty /bin/bash
 ```
-This requests a NVIDIA P100 GPU with 1 CPU (N), 12 cores (-c), 2 P100 cards (gpu:2), 186 GB of RAM (mem) for 72 hours (time). It opens a command line interface (/bin/bash) to such a system. IMPORTANT: You have to free resources back to the cluster when you are done using them. To do this, run the 'exit' command before closing your session.
+This requests a NVIDIA P100 GPU with 1 CPU (N), 12 cores (-c), 2 P100 cards (gpu:2), 186 GB of RAM (mem) for 72 hours (time). It opens a command line interface (/bin/bash) to such a system. IMPORTANT: You should ALWAYS free resources back to the cluster when you are done using them. To do this, run the **'exit'** command before closing your session.
 
 There are two ways to run deep learning software:
 1. Use the readily available tensorflow module in the HPC. For that, we run the following:
@@ -93,7 +92,7 @@ Since the training dataset only consists of 34 training images (in case of `\EC`
 
 `data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. 
 
-The pre-trained and trained network weights are stored in unet_pretrain.hdf5 and unet_train.hdf5 respectively. `unet-batch-job.slurm` is a script that runs unet.py in `[job (batch) mode](#job-(batch)-mode)`. In this case, you don't have to wait for the resources (GPU nodes) if they are not readily available.
+The pre-trained and trained network weights are stored in unet_pretrain.hdf5 and unet_train.hdf5 respectively. `unet-batch-job.slurm` is a script that runs unet.py in `[job (batch) mode](#job-(batch)-mode)`. In this case, you don't have to wait for the resources (GPU nodes) if they are not readily available. You can run the command `squeue -u <caseID>` to see the status of your jobs.
 
 ### Running unet.py
 
