@@ -57,7 +57,7 @@ module load gcc cuda singularity
 singularity shell --nv /home/cxk340/singularity_image/keras_tf.img
 ```
 
-Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software. Currently, only option 2 works with the code. I think that the issue with option 1 relates to the versions of keras/tf libraries.
+Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software. Currently, either option 1 or 2 can be used to run this code.
 
 ## Downloading the code
 
@@ -80,7 +80,7 @@ The repository is organized into the following folders:
 code files
 ```
 
-The code allows for pre-training the network to segment neurons in electron microscopy images. This is an optional step, and can be useful since the electron microscopy images look similar to our endothelial cell image dataset. Moreover, the network, U-Net was originally proposed to segment such images. Training and testing images for this dataset are in the `\neuronal` folder. 
+The code allows for pre-training the network to segment neurons in electron microscopy images. This is an optional step, and can be useful since the electron microscopy images look similar to our endothelial cell image dataset. Moreover, the network, U-Net was originally proposed to segment such images. Training and testing images and labels for this dataset are in the `\neuronal` folder. 
 
 Images related to the endothelial cells are present in the `\EC` folder. Both `\EC` and `\neuronal` folders have the following folder organization. Both consist of training and testing images (in `\train` and `\test` folders respectively). `\neuronal` images were cropped to (256, 256) to match the `\EC` image size. The cropped `\neuronal` images are in `\train_crop` and `\test_crop` respectively. 
 
