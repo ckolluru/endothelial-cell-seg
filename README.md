@@ -68,7 +68,7 @@ module load git
 git clone git@github.com:ckolluru/endothelial-cell-seg.git
 ```
 
-You will see a folder named endothelial-cell-seg in your (`/home/caseID/`) folder. 
+You will see a folder named endothelial-cell-seg-master in your (`/home/caseID/`) folder. 
 
 ## Folder organization
 
