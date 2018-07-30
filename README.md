@@ -94,6 +94,8 @@ Since the training dataset only consists of 34 training images (in case of `\EC`
 
 The pre-trained and trained network weights are stored in unet_pretrain.hdf5 and unet_train.hdf5 respectively. `unet-batch-job.slurm` is a script that runs unet.py in `[job (batch) mode](#job-(batch)-mode)`. In this case, you don't have to wait for the resources (GPU nodes) if they are not readily available. You can run the command `squeue -u <caseID>` to see the status of your jobs.
 
+Note: Please use numbers as filenames for the images in all folders. 
+
 ### Running unet.py
 
 The following command provides information on how to use the unet.py. This is the only file that needs to be run.
