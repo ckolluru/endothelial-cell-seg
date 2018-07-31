@@ -58,7 +58,22 @@ module load gcc cuda singularity
 singularity shell --nv /home/cxk340/singularity_image/keras_tf.img
 ```
 
+<<<<<<< HEAD
 Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software.
+=======
+Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software. Currently, either option 1 or 2 can be used to run this code.
+
+## Downloading the code
+
+The code can be downloaded straight to your folder on the HPC. To do this, navigate to your home folder (`/home/caseID/`) and then type:
+
+```
+module load git
+git clone git@github.com:ckolluru/endothelial-cell-seg.git
+```
+
+You will see a folder named endothelial-cell-seg-master in your (`/home/caseID/`) folder. 
+>>>>>>> 8cd8bcc03eeb34495fdb30132e8145a33d9cd305
 
 ## Folder organization
 
@@ -79,7 +94,21 @@ Since the training dataset only consists of 34 training images, we augment the d
 
 ### Training and Testing the neural network
 
+<<<<<<< HEAD
 Run
+=======
+Since the training dataset only consists of 34 training images (in case of `\EC`) and 15 training images (in case of `\neuronal`), we augment the datasets using a combination of rotation steps and translations. Routines to perform the augmentation are called within `data.py` file. The Keras `ImageDataGenerator` function is used. Images that need to be augmented are usually placed inside an additional `\all` folder. Keras only works this way (it needs a path to a folder that has a folder containing the images).
+
+`data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. 
+
+The pre-trained and trained network weights are stored in unet_pretrain.hdf5 and unet_train.hdf5 respectively. `unet-batch-job.slurm` is a script that runs unet.py in `[job (batch) mode](#job-(batch)-mode)`. In this case, you don't have to wait for the resources (GPU nodes) if they are not readily available. You can run the command `squeue -u <caseID>` to see the status of your jobs.
+
+Note: Please use numbers as filenames for the images in all folders. 
+
+### Running unet.py
+
+The following command provides information on how to use the unet.py. This is the only file that needs to be run.
+>>>>>>> 8cd8bcc03eeb34495fdb30132e8145a33d9cd305
 ```
 python unet.py
 ```
