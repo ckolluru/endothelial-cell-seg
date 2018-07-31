@@ -118,6 +118,21 @@ Hence, in order to test the software on a completely new image, the image can be
 python unet.py --pre_train 0 --train 0 --test 1 --u cxk340
 ```
 
+## Batch Jobs
+
+A batch job can be run using the unet-batch-job.slurm file. Ensure that you change the email ID in the `unet-batch-job.slurm` script to your mail ID. To run, login to the HEAD node on the cluster and type,
+
+```
+<change to working directory>
+sbatch unet-batch-job.slurm
+```
+
+Options to use the HPC tensorflow module, singularity image or run the code multiple times (using the --trial option) are shown in the slurm script. Script can be commented as required to achieve the required functionality. To check the status of your job, type:
+
+```
+squeue -u <caseID>
+```
+
 ## Built With
 
 * [Tensorflow](http://www.tensorflow.org/) - Neural network training, testing backend
