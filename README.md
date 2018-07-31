@@ -105,11 +105,12 @@ python unet.py --help
 
 Command line arguments can be sent to `unet.py`. For example,
 
---pre_train 1 will pre-train the network with the `\neuronal` images. --pre_train 0 will not.
---train 1 will train the network with the `\EC` images. --train 0 will not
---use_pre_train 1 will load the pre-trained network weights prior to network training on `\EC` images. --use_pre_train 0 will not.
---test 1 will run the trained network (looks for the weight file from the trained network) on all `\EC` test images. --test 0 will not.
---u cxk340 will consider that the code and data exist in the HPC user cxk340. **Other users**, need to specify their case ID instead.
+--pre_train 1 will pre-train the network with the `\neuronal` images. --pre_train 0 will not. (Default 1) <br />
+--train 1 will train the network with the `\EC` images. --train 0 will not. (Default 1) <br />
+--use_pre_train 1 will load the pre-trained network weights prior to network training on `\EC` images. --use_pre_train 0 will not. (Default 1) <br />
+--test 1 will run the trained network (looks for the weight file from the trained network) on all `\EC` test images. --test 0 will not. (Default 1) <br />
+--u cxk340 will consider that the code and data exist in the HPC user cxk340. **Other users**, need to specify their case ID instead. (Default 'cxk340') <br />
+--trial 0 is a way to run the code multiple times, results will be stored in a folder named as `results_xy` where `xy` represents the number of trial. For example, you can have a for loop that iterates from 1 to 10 and the results will be written in folders from `results_1` to `results_10`. 0 will simply write to the `results` folder. (Default 0) <br />
 
 Hence, in order to test the software on a completely new image, the image can be cropped (to 256, 256) and copied over to `\data\EC\test`. JPG format is supported. The network can be fully trained (including pre-training) by running `python unet.py`. With no command line arguments, the code will pre-train, train, and predict on all test images in `\data\EC\test` folder. The results will be in the `\results` folder. If you already have a trained network (the corresponding weight file, unet_train.hdf5 in your folder), testing can be done by just running:
 
