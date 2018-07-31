@@ -6,8 +6,9 @@ import math
 
 def natural_keys(text):
 
-    # Assumes that the path is of the form /home/<case ID>/.../1.tif
+    # Assumes that the path is of the form /home/<case ID>/.../1.jpg
     c = re.split('(/\d+)', text)
+    print(c)
     return int(c[1].split('/')[1])
 
 class dataProcess(object):
@@ -37,9 +38,9 @@ class dataProcess(object):
         labels_generator = labels_datagen.flow_from_directory('/home/' + self.username + '/endothelial-cell-seg/data/EC/train/label/', color_mode='grayscale', class_mode=None, seed=1, batch_size=8)
 
         # Find all test images from the data folder
-        self.test_imgs_list = glob.glob('/home/' + self.username + '/endothelial-cell-seg/data/EC/test/*.jpg')
+        self.test_imgs_list = glob.glob('/home/' + self.username + '/endothelial-cell-seg/data/EC/test/*.bmp')
 
-        # Sort so that the list is 1.tif, 2.tif etc. and not 1.tif, 11.tif etc.
+        # Sort so that the list is 1.jpg, 2.jpg etc. and not 1.jpg, 11.jpg etc.
         self.test_imgs_list.sort(key=natural_keys)
 
         # Read test image files and load them into a numpy array
@@ -79,12 +80,16 @@ class dataProcess(object):
         
         return image_generator, labels_generator, image_validation_generator, labels_validation_generator
 
-    def save_test_predictions(self, imgs_test_predictions, username):
+    def save_test_predictions(self, imgs_test_predictions, username, trial):
 
         for i in np.arange(imgs_test_predictions.shape[0]):
             img_test_prediction = array_to_img(imgs_test_predictions[i,:,:])
             filename_start_index = self.test_imgs_list[i].rfind('/')
-            img_test_prediction.save('/home/' + username + '/endothelial-cell-seg/results/%s' %(self.test_imgs_list[i][filename_start_index+1:]))
+            if trial == 0:
+                img_test_prediction.save('/home/' + username + '/endothelial-cell-seg/results/%s' %(self.test_imgs_list[i][filename_start_index+1:]))
+            else:
+                img_test_prediction.save('/home/' + username + '/endothelial-cell-seg/results_' + str(trial) + '/%s' %(self.test_imgs_list[i][filename_start_index+1:]))
+
 
 if __name__ == '__main__':
 

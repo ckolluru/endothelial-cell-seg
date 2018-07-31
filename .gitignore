@@ -3,3 +3,6 @@
 
 # Output files from batch job submissions
 *.out
+
+# Compiled python files
+*.pyc

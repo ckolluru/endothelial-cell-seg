@@ -1,14 +1,59 @@
 import os 
 import numpy as np
+import tensorflow as tf
+import random as rn
+
+# Things to reproduce results, although Keras on multiple GPU is not reproducible.
+# The below is necessary for starting Numpy generated random numbers
+# in a well-defined initial state.
+np.random.seed(42)
+
+# The below tf.set_random_seed() will make random number generation
+# in the TensorFlow backend have a well-defined initial state.
+# For further details, see: https://www.tensorflow.org/api_docs/python/tf/set_random_seed
+tf.set_random_seed(1234)
+
+# The below is necessary in Python 3.2.3 onwards to
+# have reproducible behavior for certain hash-based operations.
+# See these references for further details:
+# https://docs.python.org/3.4/using/cmdline.html#envvar-PYTHONHASHSEED
+# https://github.com/fchollet/keras/issues/2280#issuecomment-306959926
+os.environ['PYTHONHASHSEED'] = '0'
+
+# The below is necessary for starting core Python generated random numbers
+# in a well-defined state.
+rn.seed(12345)
+
+# Force TensorFlow to use single thread.
+# Multiple threads are a potential source of
+# non-reproducible results.
+# For further details, see: https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res
+session_conf = tf.ConfigProto(intra_op_parallelism_threads=1, inter_op_parallelism_threads=1)
+sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
+
 from keras.models import *
 from keras.layers import Input, merge, Conv2D, MaxPooling2D, UpSampling2D, Dropout, Cropping2D, concatenate
 from keras.optimizers import *
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from keras import backend as keras
 from data import *
 import argparse
 from keras.utils import plot_model
-import keras as K
+import keras
+from keras import backend as K
+
+K.set_session(sess)
+
+def weighted_binary_crossentropy(y_true, y_pred):
+
+	y_true_f = K.flatten(y_true)
+	y_pred_f = K.flatten(y_pred)
+
+	binary_crossentropy = K.binary_crossentropy(y_true_f, y_pred_f)
+	weighted_vector = y_true_f * 0.21 + (1. - y_true_f) * 0.79
+	weighted_binary_crossentropy_loss = weighted_vector * binary_crossentropy
+
+	return K.mean(weighted_binary_crossentropy_loss)
 
 class myUnet(object):
 
@@ -21,10 +66,11 @@ class myUnet(object):
         self.test = args.test
         self.user = args.u
         self.mydata = dataProcess(256, 256, self.user)
+        self.trial = args.trial
 
         # Version of the keras library is different in the HPC's tensorflow module and our singularity image
         # This is causing an issue with the data augmentation step (ImageDataGenerator)
-        self.keras_version = K.__version__
+        self.keras_version = keras.__version__
 
     def load_data(self):
 
@@ -78,7 +124,7 @@ class myUnet(object):
 
         model = Model(inputs = inputs, outputs = conv9)
 
-        model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
+        model.compile(optimizer = Adam(lr = 1e-4), loss = weighted_binary_crossentropy,  metrics = ['accuracy'])
 
         model.summary()
 
@@ -106,7 +152,9 @@ class myUnet(object):
 
             # Fit the model to the pre-train data
             print('Fitting model to pre-train dataset')
-            model.fit_generator(zip(imgs_train, imgs_train_labels), validation_data=(zip(imgs_validation, imgs_validation_labels)), steps_per_epoch=20, validation_steps=10, epochs=20, verbose=1, shuffle=True, callbacks=[model_checkpoint])
+            print('Data generator filenames')
+            print(imgs_train.filenames)
+            model.fit_generator(zip(imgs_train, imgs_train_labels), validation_data=(zip(imgs_validation, imgs_validation_labels)), steps_per_epoch=20, validation_steps=20, epochs=20, verbose=1, shuffle=True, callbacks=[model_checkpoint])
 
         # Train the network 
         if self.train:
@@ -117,6 +165,10 @@ class myUnet(object):
             print('Loading training data (EC cells in microscopy images)')
             imgs_train, imgs_train_labels, imgs_test = self.load_data()
             print('Loaded training data (EC cells in microscopy images) \n')
+
+            # print('Using class weights since it is an unbalanced dataset, more cell pixels than cell border pixels')
+            # # Mean over all training labels is used to compute the following values. 21 percent of cell border pixels, 79 percent other.
+            # class_weight_dict={0:0.79, 1:0.21}
 
             # Get the neural network architecture
             print('Loading network architecture')
@@ -134,7 +186,7 @@ class myUnet(object):
             # Fit the model to the training data
             print('Fitting model to train dataset')
             print('TODO: Fix steps_per_epoch and validation_steps - make sure all training examples are used')
-            model.fit_generator(zip(imgs_train, imgs_train_labels), steps_per_epoch=20, epochs=20, validation_steps=10, verbose=1, shuffle=True, callbacks=[model_checkpoint])
+            model.fit_generator(zip(imgs_train, imgs_train_labels), steps_per_epoch=20, epochs=20, verbose=1, shuffle=True, callbacks=[model_checkpoint])
 
         # Test the network
         if self.test:
@@ -163,7 +215,7 @@ class myUnet(object):
 
             # Save predictions to the results folder
             print('Saving predictions on test images to results folder in the current directory')
-            self.mydata.save_test_predictions(imgs_test_predictions, self.user)
+            self.mydata.save_test_predictions(imgs_test_predictions, self.user, self.trial)
 
 if __name__ == '__main__':
 
@@ -179,6 +231,8 @@ if __name__ == '__main__':
                         help='Segment EC cells in a held-out test set of microscopy images (0/1, default 1)')
     parser.add_argument('--u', default='cxk340', type=str,
                         help='Case username (example cxk340). Download files from Github to your folder on the HPC. Data read/write will then be done from the corresponding folders.')
+    parser.add_argument('--trial', default=0, type=int,
+                        help='Useful if you want to run the software multiple times to check for reproducibility of results')
     args = parser.parse_args()
 
     print('\nUsing the following command line arguments:')
@@ -193,4 +247,6 @@ if __name__ == '__main__':
 
     # Draw model architecture to a file (can be used to ensure that the layers are connected properly)
     model = myunet.get_unet()
-    plot_model(model, to_file='model.png')
+
+    if myunet.keras_version is not '2.1.3':
+    	plot_model(model, to_file='model.png')

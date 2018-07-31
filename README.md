@@ -19,20 +19,21 @@ Next, to run commands, you can use MobaXTerm, PuTTY or similar software to conne
 
 ![mobaxterm](https://user-images.githubusercontent.com/8373968/43086282-9c48a754-8eba-11e8-9a04-4fcec3919d08.PNG)
 
-Enter your Case credentials to start a session. After logging in, you will see something like this:
+Enter your Case credentials to start a session. Ignore the torch error, you shouldn't see that.
 
-`[cxk340@hpc3 ~]$`
+![mobaxterm2](https://user-images.githubusercontent.com/8373968/43086589-5b1b3c78-8ebb-11e8-8f23-a8d44a680ecf.PNG)
 
-You are now logged into the HEAD node (hpc3). These nodes are general purpose nodes and should not be used for any scientific computing. These nodes can only be used to request a computing node (CPU/GPU) in interactive mode (see below) or submit jobs (see below). Essentially, after you have an SSH connection to the HPC, there are two ways to run your software:
+After you have an SSH connection, there are two ways to run your software:
 
-- Interactive mode: `#Interactive mode` You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then get a shell to that node to run files etc.
-- Job (batch) mode: `#Job (batch) mode`  You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. The script can contain as many commands as you like. You don't have to wait if the resources you need aren't readily available in this case.
+- Interactive mode: You request the resource you need (CPU/GPU, RAM, cores, time etc.), get the resource, and then run a file.
+- Job (batch) mode: You submit a job script that contains commands, and the script will be run when the resources you request (CPU/GPUs) are available. You don't have to wait if the resources you need aren't readily available in this case.
 
-I'll demonstrate the `[interactive mode](#interactive-mode)` now. First, we request a GPU node (essentially just a PC which has some graphic cards on it):
+
+I'll demonstrate the interactive mode now. First, we request a GPU node (essentially just a PC which has some graphic cards on it):
 ```
 srun --x11 -p gpu -C gpup100 -N 1 -c 12 --gres=gpu:2 --mem=186g --time=72:00:00 --pty /bin/bash
 ```
-This requests a NVIDIA P100 GPU with 1 CPU (N), 12 cores (-c), 2 P100 cards (gpu:2), 186 GB of RAM (mem) for 72 hours (time). It opens a command line interface (/bin/bash) to such a system. IMPORTANT: You should ALWAYS free resources back to the cluster when you are done using them. To do this, run the **'exit'** command before closing your session.
+This requests a NVIDIA P100 GPU with 1 CPU (N), 12 cores (-c), 2 P100 cards (gpu:2), 186 GB of RAM (mem) for 72 hours (time). It opens a command line interface (/bin/bash) to such a system. IMPORTANT: You have to free resources back to the cluster when you are done using them. To do this, run the 'exit' command before closing your session.
 
 There are two ways to run deep learning software:
 1. Use the readily available tensorflow module in the HPC. For that, we run the following:
@@ -57,18 +58,7 @@ module load gcc cuda singularity
 singularity shell --nv /home/cxk340/singularity_image/keras_tf.img
 ```
 
-Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software. Currently, either option 1 or 2 can be used to run this code.
-
-## Downloading the code
-
-The code can be downloaded straight to your folder on the HPC. To do this, navigate to your home folder (`/home/caseID/`) and then type:
-
-```
-module load git
-git clone git@github.com:ckolluru/endothelial-cell-seg.git
-```
-
-You will see a folder named endothelial-cell-seg in your (`/home/caseID/`) folder. 
+Both these methods will give you a shell that can run python with the deep learning libraries (keras, tensorflow) available. We can now run our software.
 
 ## Folder organization
 
@@ -77,42 +67,28 @@ The repository is organized into the following folders:
 ```
 \data
 \results
+\test_examples
 code files
 ```
 
-The code allows for pre-training the network to segment neurons in electron microscopy images. This is an optional step, and can be useful since the electron microscopy images look similar to our endothelial cell image dataset. Moreover, the network, U-Net was originally proposed to segment such images. Training and testing images and labels for this dataset are in the `\neuronal` folder. 
+`\data` consists of training and testing images (in `\train` and `\test` folders respectively). `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the images currently. `\results` folder consists the segmentation result on the `\test` images. The code messes up the order of images in the `\test` folder (0,1,11,.. instead of 0,1,2,..). The correct order is written to `\test_examples`. 
 
-Images related to the endothelial cells are present in the `\EC` folder. Both `\EC` and `\neuronal` folders have the following folder organization. Both consist of training and testing images (in `\train` and `\test` folders respectively). `\neuronal` images were cropped to (256, 256) to match the `\EC` image size. The cropped `\neuronal` images are in `\train_crop` and `\test_crop` respectively. 
+Since the training dataset only consists of 34 training images, we augment the dataset using a combination of rotation steps and translations. Routines to perform the augmentation are within `data.py` file. Augmented versions of training images and labels are written to `aug_train` and `aug_label`. `aug_merge` is a temporary folder that merges the images and label into red and blue channels of an RGB image, performs augmentation and then separates the two channels in the end.
 
-For `\EC`, `\train` folder consists of `\image` and `\label` folders within it. `\test` only consists of the test images currently. `\results` folder in the parent directory consists the segmentation result on the `\test` images. 
+`data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. This weight file can be loaded at run-time to test the network against new images (code in `test_predict.py`. `visualize_model.py` draws a picture of the network and saves it in `model.png`.
 
-For `\neuronal`, we currently have 15 `\train_crop` images and 15 `\test_crop` images. 
+### Training and Testing the neural network
 
-Since the training dataset only consists of 34 training images (in case of `\EC`) and 15 training images (in case of `\neuronal`), we augment the datasets using a combination of rotation steps and translations. Routines to perform the augmentation are called within `data.py` file. The Keras `ImageDataGenerator` function is used. Images that need to be augmented are usually placed inside an additional `\all` folder. Keras only works this way (it needs a path to a folder that has a folder containing the images).
-
-`data.py` consists routines to read and write from the `\data` folder. `unet.py` runs the training and testing of the neural network and saves the network weights to a weight file. 
-
-The pre-trained and trained network weights are stored in unet_pretrain.hdf5 and unet_train.hdf5 respectively. `unet-batch-job.slurm` is a script that runs unet.py in `[job (batch) mode](#job-(batch)-mode)`. In this case, you don't have to wait for the resources (GPU nodes) if they are not readily available. You can run the command `squeue -u <caseID>` to see the status of your jobs.
-
-### Running unet.py
-
-The following command provides information on how to use the unet.py. This is the only file that needs to be run.
+Run
 ```
-python unet.py --help
+python unet.py
 ```
 
-Command line arguments can be sent to `unet.py`. For example,
+### Test on new image
 
---pre_train 1 will pre-train the network with the `\neuronal` images. --pre_train 0 will not.
---train 1 will train the network with the `\EC` images. --train 0 will not
---use_pre_train 1 will load the pre-trained network weights prior to network training on `\EC` images. --use_pre_train 0 will not.
---test 1 will run the trained network (looks for the weight file from the trained network) on all `\EC` test images. --test 0 will not.
---u cxk340 will consider that the code and data exist in the HPC user cxk340. **Other users**, need to specify their case ID instead.
-
-Hence, in order to test the software on a completely new image, the image can be cropped (to 256, 256) and copied over to `\data\EC\test`. JPG format is supported. The network can be fully trained (including pre-training) by running `python unet.py`. With no command line arguments, the code will pre-train, train, and predict on all test images in `\data\EC\test` folder. The results will be in the `\results` folder. If you already have a trained network (the corresponding weight file, unet_train.hdf5 in your folder), testing can be done by just running:
-
+After training the network and creating the weights file (hdf5), run:
 ```
-python unet.py --pre_train 0 --train 0 --test 1 --u cxk340
+python test_predict.py
 ```
 
 ## Built With
