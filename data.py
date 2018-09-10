@@ -71,8 +71,8 @@ class dataProcess(object):
         labels_datagen = ImageDataGenerator(**datagen_args)
 
         # Load training images and labels from the respective directories
-        image_generator = image_datagen.flow_from_directory('/home/' + self.username + '/endothelial-cell-seg/data/neuronal/train_crop/image/', color_mode='grayscale', class_mode=None, seed=1, batch_size=8)
-        labels_generator = labels_datagen.flow_from_directory('/home/' + self.username + '/endothelial-cell-seg/data/neuronal/train_crop/label/', color_mode='grayscale', class_mode=None, seed=1, batch_size=8)
+        image_generator = image_datagen.flow_from_directory('/home/' + self.username + '/endothelial-cell-seg/data/neuronal/train_crop/image/', color_mode='grayscale', class_mode=None, seed=1, batch_size=8, target_size=(sample_img.shape[0], sample_img.shape[1]))
+        labels_generator = labels_datagen.flow_from_directory('/home/' + self.username + '/endothelial-cell-seg/data/neuronal/train_crop/label/', color_mode='grayscale', class_mode=None, seed=1, batch_size=8, target_size=(sample_img.shape[0], sample_img.shape[1]))
 
         # Load testing images and labels from the respective directories
         image_validation_generator = image_datagen.flow_from_directory('/home/' + self.username + '/endothelial-cell-seg/data/neuronal/test_crop/image/', color_mode='grayscale', class_mode=None, seed=1, batch_size=32)
