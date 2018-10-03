@@ -65,7 +65,7 @@ class myUnet(object):
         self.use_pre_train = args.use_pre_train
         self.test = args.test
         self.user = args.u
-        self.mydata = dataProcess(256, 256, self.user)
+        self.mydata = dataProcess(480, 320, self.user)
         self.trial = args.trial
 
         # Version of the keras library is different in the HPC's tensorflow module and our singularity image
@@ -86,7 +86,7 @@ class myUnet(object):
 
     def get_unet(self):
 
-        inputs = Input((256, 256, 1))        
+        inputs = Input((480, 320, 1))        
 
         conv2 = Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
         conv2 = Conv2D(128, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv2)
@@ -180,7 +180,7 @@ class myUnet(object):
 
             if self.use_pre_train:
                 print('Loading weights from the pre-trained network')
-                model.load_weights('/home/' + self.user + '/endothelial-cell-seg/unet_pretrain.hdf5')
+                model.load_weights('/home/' + self.user + '/endothelial-cell-seg-master-2/unet_pretrain.hdf5')
                 print('Loaded weights from the pre-trained network \n')
 
             # Fit the model to the training data
@@ -201,7 +201,7 @@ class myUnet(object):
 
             # Load the network weights
             print('Loading network weights from unet_train.hdf5 file')
-            model.load_weights('/home/' + self.user + '/endothelial-cell-seg/unet_train.hdf5')
+            model.load_weights('/home/' + self.user + '/endothelial-cell-seg-master-2/unet_train.hdf5')
             print('Loaded weights from the pre-trained network \n')
 
             # Load training and testing images (only testing is eventually used here)
@@ -215,7 +215,7 @@ class myUnet(object):
 
             # Save predictions to the results folder
             print('Saving predictions on test images to results folder in the current directory')
-            self.mydata.save_test_predictions(imgs_test_predictions, self.user, self.trial)
+            self.mydata.save_test_predictions(imgs_test_predictions, self.user, self.trial, 'unet')
 
 if __name__ == '__main__':
 
@@ -229,8 +229,8 @@ if __name__ == '__main__':
                         help='Use the network weights from pre-training as a starting point (0/1, default 1). Needs a weights file in the current directory called unet_pretrain.hdf5')
     parser.add_argument('--test', default=1, type=int,
                         help='Segment EC cells in a held-out test set of microscopy images (0/1, default 1)')
-    parser.add_argument('--u', default='cxk340', type=str,
-                        help='Case username (example cxk340). Download files from Github to your folder on the HPC. Data read/write will then be done from the corresponding folders.')
+    parser.add_argument('--u', default='nmj14', type=str,
+                        help='Case username (example nmj14). Download files from Github to your folder on the HPC. Data read/write will then be done from the corresponding folders.')
     parser.add_argument('--trial', default=0, type=int,
                         help='Useful if you want to run the software multiple times to check for reproducibility of results')
     args = parser.parse_args()
@@ -249,4 +249,4 @@ if __name__ == '__main__':
     model = myunet.get_unet()
 
     if myunet.keras_version is not '2.1.3':
-    	plot_model(model, to_file='model.png')
+    	plot_model(model, to_file='unet-model.png')
